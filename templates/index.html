@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}DiabeTech AI - Intelligent Diabetes Risk Prediction{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row align-items-center gy-5 py-4">
+        <div class="col-lg-7 text-center text-lg-start">
+            <div class="d-inline-flex mb-3">
+                <span class="badge-pill-soft badge-pill-coral">
+                    <i class="bi bi-cpu-fill"></i> Machine Learning Diagnostic Engine
+                </span>
+            </div>
+            <h1 class="display-4 fw-bold text-light mb-3 lh-sm">
+                Intelligent Diabetes <br class="d-none d-md-block">
+                <span class="text-gradient-primary">Risk Prediction</span> Platform
+            </h1>
+            <p class="lead text-secondary mb-4 pe-lg-4" style="font-size: 1.15rem; line-height: 1.7;">
+                Leverage advanced Random Forest ensemble classification to evaluate diabetes probability using verified physiological biomarkers. Streamlined for data upload, model retraining, and real-time clinical screening.
+            </p>
+            <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('dashboard') }}" class="btn-modern btn-primary-gradient">
+                        <i class="bi bi-speedometer2"></i> Access Dashboard
+                    </a>
+                    <a href="{{ url_for('predict') }}" class="btn-modern btn-emerald-gradient">
+                        <i class="bi bi-activity"></i> Start Prediction
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('register') }}" class="btn-modern btn-primary-gradient">
+                        <i class="bi bi-rocket-takeoff"></i> Get Started Free
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn-modern btn-glass">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </a>
+                {% endif %}
+                <a href="{{ url_for('upload') }}" class="btn-modern btn-glass">
+                    <i class="bi bi-cloud-arrow-up"></i> Upload Dataset
+                </a>
+            </div>
+
+            <!-- Metric Highlights -->
+            <div class="row g-3 mt-4 pt-3 border-top border-secondary border-opacity-25 text-start">
+                <div class="col-4">
+                    <div class="fw-bold fs-4 text-light">8</div>
+                    <small class="text-muted d-block">Clinical Markers</small>
+                </div>
+                <div class="col-4">
+                    <div class="fw-bold fs-4" style="color: #ff758f;">100</div>
+                    <small class="text-muted d-block">Decision Trees</small>
+                </div>
+                <div class="col-4">
+                    <div class="fw-bold fs-4 text-success">&lt; 1s</div>
+                    <small class="text-muted d-block">Inference Speed</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Visual / Graphic Card -->
+        <div class="col-lg-5">
+            <div class="card-glass p-4 position-relative overflow-hidden">
+                <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="feature-icon-box feature-icon-coral mb-0" style="width: 40px; height: 40px; font-size: 1.1rem;">
+                            <i class="bi bi-activity"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 text-light fw-bold">Clinical AI Screening</h6>
+                            <small class="text-muted">Random Forest Architecture</small>
+                        </div>
+                    </div>
+                    <span class="badge-pill-soft badge-pill-emerald">
+                        <i class="bi bi-check2-circle"></i> Ready
+                    </span>
+                </div>
+
+                <!-- Feature Mini Dashboard Preview -->
+                <div class="vstack gap-3">
+                    <div class="d-flex justify-content-between align-items-center p-3 rounded-3" style="background: rgba(18, 19, 28, 0.7); border: 1px solid rgba(255,255,255,0.06);">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-droplet-half text-warning fs-5"></i>
+                            <div>
+                                <div class="text-light fw-semibold small">Glucose & Insulin Analysis</div>
+                                <small class="text-muted">Real-time glycemic monitoring</small>
+                            </div>
+                        </div>
+                        <span class="text-light fw-bold small">mg/dL</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center p-3 rounded-3" style="background: rgba(18, 19, 28, 0.7); border: 1px solid rgba(255,255,255,0.06);">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-heart-pulse fs-5" style="color: #ff4d6d;"></i>
+                            <div>
+                                <div class="text-light fw-semibold small">Vascular & Blood Pressure</div>
+                                <small class="text-muted">Diastolic pressure bounds</small>
+                            </div>
+                        </div>
+                        <span class="text-light fw-bold small">mm Hg</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center p-3 rounded-3" style="background: rgba(18, 19, 28, 0.7); border: 1px solid rgba(255,255,255,0.06);">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-person-lines-fill text-purple fs-5"></i>
+                            <div>
+                                <div class="text-light fw-semibold small">BMI & Demographic Factors</div>
+                                <small class="text-muted">Age, Pedigree, Body Mass</small>
+                            </div>
+                        </div>
+                        <span class="text-light fw-bold small">kg/m²</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-2 text-center">
+                    <small class="text-muted d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-shield-lock-fill" style="color: #ff758f;"></i> Model persisted at <code>models/model.pkl</code>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3-Step Workflow -->
+    <div class="py-5">
+        <div class="text-center mb-5">
+            <span class="badge-pill-soft badge-pill-coral mb-2">Workflow</span>
+            <h2 class="fw-bold text-light">How DiabeTech AI Works</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                An end-to-end clinical machine learning pipeline designed for rapid data processing and high-fidelity risk classification.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card-glass card-glass-interactive p-4 h-100">
+                    <div class="feature-icon-box feature-icon-coral">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                    </div>
+                    <h5 class="text-light fw-bold mb-2">1. Ingest Dataset</h5>
+                    <p class="text-muted small mb-3">
+                        Upload custom CSV patient records. Preview schema and clinical biomarker distributions instantly.
+                    </p>
+                    <a href="{{ url_for('upload') }}" class="fw-semibold small text-decoration-none d-flex align-items-center gap-1 mt-auto" style="color: #ff758f;">
+                        Explore Upload <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-glass card-glass-interactive p-4 h-100">
+                    <div class="feature-icon-box feature-icon-purple">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+                    <h5 class="text-light fw-bold mb-2">2. Train Random Forest</h5>
+                    <p class="text-muted small mb-3">
+                        Fit 100 decision trees using an 80/20 train-test split for resilient classification and robust generalization.
+                    </p>
+                    <a href="{{ url_for('dashboard') }}" class="fw-semibold small text-decoration-none d-flex align-items-center gap-1 mt-auto" style="color: #c084fc;">
+                        Review Training <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-glass card-glass-interactive p-4 h-100">
+                    <div class="feature-icon-box feature-icon-emerald">
+                        <i class="bi bi-clipboard2-pulse"></i>
+                    </div>
+                    <h5 class="text-light fw-bold mb-2">3. Predict & Analyze</h5>
+                    <p class="text-muted small mb-3">
+                        Enter patient metrics to obtain instant risk assessments, probability scores, and feature correlation graphs.
+                    </p>
+                    <a href="{{ url_for('predict') }}" class="fw-semibold small text-decoration-none d-flex align-items-center gap-1 mt-auto" style="color: #34d399;">
+                        Launch Predictor <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

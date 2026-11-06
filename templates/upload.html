@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Dataset - DiabeTech AI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Page Header -->
+    <div class="mb-4">
+        <div class="d-inline-flex mb-2">
+            <span class="badge-pill-soft badge-pill-coral">
+                <i class="bi bi-cloud-arrow-up"></i> Data Ingestion Pipeline
+            </span>
+        </div>
+        <h2 class="fw-bold text-light mb-1">Dataset Management</h2>
+        <p class="text-muted">Import clinical patient datasets (.csv) to inspect records and train predictive models.</p>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="card-glass p-4 p-md-5 mb-5">
+        <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+            <div class="upload-dropzone mb-4" id="dropzone" onclick="document.getElementById('file').click()">
+                <div class="feature-icon-box feature-icon-coral mx-auto mb-3" style="width: 64px; height: 64px; font-size: 2rem;">
+                    <i class="bi bi-cloud-arrow-up-fill"></i>
+                </div>
+                <h4 class="text-light fw-bold mb-2">Select or Drag & Drop Dataset</h4>
+                <p class="text-muted small mb-3">Supported file formats: <strong>.csv</strong> (Comma-separated values)</p>
+                <div class="d-inline-flex align-items-center gap-2">
+                    <span class="btn-modern btn-glass btn-sm-custom">
+                        <i class="bi bi-folder2-open"></i> Browse Files
+                    </span>
+                    <span id="file-chosen-name" class="small fw-semibold" style="color: #ff758f;">No file selected</span>
+                </div>
+                <input type="file" id="file" name="file" accept=".csv" class="d-none" onchange="updateFileName(this)" required>
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-2 text-muted small">
+                    <i class="bi bi-info-circle" style="color: #ff758f;"></i>
+                    <span>Default clinical dataset: <code>diabetes.csv</code> (8 diagnostic markers + 1 target outcome)</span>
+                </div>
+                <button type="submit" class="btn-modern btn-primary-gradient">
+                    <i class="bi bi-upload"></i> Process & Preview Dataset
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table Preview Section (when file is uploaded) -->
+    {% if file_uploaded %}
+        <div class="card-glass p-4 mb-5 animate-fade-in">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                <div>
+                    <div class="d-flex align-items-center gap-2">
+                        <h4 class="text-light fw-bold mb-0">Dataset Preview</h4>
+                        <span class="badge-pill-soft badge-pill-emerald">
+                            <i class="bi bi-check-circle"></i> Ingestion Successful
+                        </span>
+                    </div>
+                    <small class="text-muted">Displaying schema and first 10 patient sample rows</small>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge-pill-soft badge-pill-coral">
+                        <i class="bi bi-columns-gap"></i> {{ columns|length }} Columns
+                    </span>
+                    <span class="badge-pill-soft badge-pill-amber">
+                        <i class="bi bi-table"></i> Top {{ data|length }} Samples
+                    </span>
+                </div>
+            </div>
+
+            <!-- Responsive Table -->
+            <div class="table-responsive mb-4">
+                <table class="table-glass">
+                    <thead>
+                        <tr>
+                            {% for col in columns %}
+                                <th>
+                                    {% if col == 'Outcome' %}
+                                        <span class="text-warning"><i class="bi bi-flag-fill me-1"></i>{{ col }}</span>
+                                    {% else %}
+                                        {{ col }}
+                                    {% endif %}
+                                </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data %}
+                            <tr>
+                                {% for cell in row %}
+                                    <td>
+                                        {% if loop.last %}
+                                            {% if cell == 1 %}
+                                                <span class="badge-pill-soft badge-pill-rose">1 (Positive)</span>
+                                            {% else %}
+                                                <span class="badge-pill-soft badge-pill-emerald">0 (Negative)</span>
+                                            {% endif %}
+                                        {% else %}
+                                            {{ cell }}
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Workflow Pipeline Next Steps -->
+            <div class="p-3 rounded-3" style="background: rgba(18, 19, 28, 0.6); border: 1px solid rgba(255,255,255,0.06);">
+                <div class="row align-items-center gy-3">
+                    <div class="col-md-6">
+                        <h6 class="text-light fw-bold mb-1">Dataset Loaded & Validated</h6>
+                        <small class="text-muted">Proceed to model retraining or generate visual correlation distributions.</small>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+                            <form action="{{ url_for('train') }}" method="POST" class="m-0 p-0">
+                                <button type="submit" class="btn-modern btn-primary-gradient">
+                                    <i class="bi bi-cpu"></i> Train Model Now
+                                </button>
+                            </form>
+                            <form action="{{ url_for('visualize') }}" method="POST" class="m-0 p-0">
+                                <button type="submit" class="btn-modern btn-glass">
+                                    <i class="bi bi-graph-up"></i> Visualize Insights
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Quick Action Suggestion if not uploaded in this session -->
+        <div class="card-glass p-4 text-center">
+            <h5 class="text-light fw-bold mb-2">Ready to Train or Predict?</h5>
+            <p class="text-muted small mx-auto mb-4" style="max-width: 550px;">
+                You can upload a custom dataset above or utilize the pre-configured clinical diabetes dataset already in the workspace to proceed directly.
+            </p>
+            <div class="d-flex flex-wrap gap-3 justify-content-center">
+                <form action="{{ url_for('train') }}" method="POST" class="m-0 p-0">
+                    <button type="submit" class="btn-modern btn-primary-gradient">
+                        <i class="bi bi-cpu"></i> Train on Workspace Dataset
+                    </button>
+                </form>
+                <form action="{{ url_for('visualize') }}" method="POST" class="m-0 p-0">
+                    <button type="submit" class="btn-modern btn-glass">
+                        <i class="bi bi-bar-chart"></i> Explore Visualizations
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function updateFileName(input) {
+    const label = document.getElementById('file-chosen-name');
+    if (input.files && input.files[0]) {
+        label.textContent = input.files[0].name;
+        label.style.color = '#34d399';
+    } else {
+        label.textContent = 'No file selected';
+        label.style.color = '#ff758f';
+    }
+}
+
+// Drag & drop highlight
+const dropzone = document.getElementById('dropzone');
+['dragenter', 'dragover'].forEach(eventName => {
+    dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+    }, false);
+});
+['dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+    }, false);
+});
+dropzone.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files.length > 0) {
+        document.getElementById('file').files = files;
+        updateFileName(document.getElementById('file'));
+    }
+});
+</script>
+{% endblock %}

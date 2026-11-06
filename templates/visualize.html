@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Visual Analytics - DiabeTech AI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+            <div class="d-inline-flex mb-2">
+                <span class="badge-pill-soft badge-pill-coral">
+                    <i class="bi bi-bar-chart-line-fill"></i> Exploratory Data Analysis
+                </span>
+            </div>
+            <h2 class="fw-bold text-light mb-1">Clinical Dataset Visualizations</h2>
+            <p class="text-muted small mb-0">Correlation and distribution analysis across physiological features</p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ url_for('predict') }}" class="btn-modern btn-primary-gradient btn-sm-custom">
+                <i class="bi bi-activity"></i> Run Prediction
+            </a>
+            <a href="{{ url_for('upload') }}" class="btn-modern btn-glass btn-sm-custom">
+                <i class="bi bi-cloud-arrow-up"></i> Ingest New Data
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Plot Card -->
+    <div class="card-glass p-4 p-md-5 mb-5">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+            <div>
+                <h4 class="text-light fw-bold mb-1">Feature Correlation: Pregnancies vs. Glucose Level</h4>
+                <small class="text-muted">Scatter distribution comparing reproductive history with serum glucose concentrations</small>
+            </div>
+            <span class="badge-pill-soft badge-pill-emerald">
+                <i class="bi bi-image"></i> High-Resolution Render
+            </span>
+        </div>
+
+        <!-- Plot Display Container -->
+        <div class="text-center p-3 rounded-4 mb-4" style="background: rgba(10, 11, 17, 0.7); border: 1px solid rgba(255, 255, 255, 0.08);">
+            {% if scatter_plot %}
+                <img src="{{ url_for('static', filename='images/scatter_plot.png') }}" alt="Clinical Scatter Plot" class="img-fluid rounded-3 shadow-lg" style="max-height: 550px; width: auto; object-fit: contain;">
+            {% else %}
+                <div class="py-5 text-center text-muted">
+                    <i class="bi bi-image-alt fs-1 d-block mb-3 text-secondary"></i>
+                    <p class="mb-0">No visualization available yet. Upload a dataset to generate visual plots.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Clinical Interpretation Cards -->
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="p-3 rounded-3 h-100" style="background: rgba(18, 19, 28, 0.6); border: 1px solid rgba(255,255,255,0.06);">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-graph-up text-warning"></i>
+                        <h6 class="text-light fw-bold mb-0">Glycemic Trend</h6>
+                    </div>
+                    <p class="text-muted small mb-0">
+                        Patients exhibiting glucose concentrations exceeding 140 mg/dL form a distinct cluster correlating with positive outcome diagnosis.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="p-3 rounded-3 h-100" style="background: rgba(18, 19, 28, 0.6); border: 1px solid rgba(255,255,255,0.06);">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-layers" style="color: #ff758f;"></i>
+                        <h6 class="text-light fw-bold mb-0">Gestational Factors</h6>
+                    </div>
+                    <p class="text-muted small mb-0">
+                        Higher parity (pregnancy count &gt; 5) combined with moderate glucose elevation demonstrates enhanced risk probability in clinical history.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="p-3 rounded-3 h-100" style="background: rgba(18, 19, 28, 0.6); border: 1px solid rgba(255,255,255,0.06);">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-cpu text-emerald" style="color: #34d399;"></i>
+                        <h6 class="text-light fw-bold mb-0">Multi-Feature Splits</h6>
+                    </div>
+                    <p class="text-muted small mb-0">
+                        While 2D projections show baseline trends, the Random Forest model simultaneously analyzes all 8 physiological dimensions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Navigation Footer Card -->
+    <div class="card-glass p-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div>
+            <h6 class="text-light fw-bold mb-1">Proceed to Patient Evaluation</h6>
+            <small class="text-muted">Apply insights from these distributions to test new patient profiles.</small>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('dashboard') }}" class="btn-modern btn-glass">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="{{ url_for('predict') }}" class="btn-modern btn-primary-gradient">
+                <i class="bi bi-activity"></i> Start Prediction
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

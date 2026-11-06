@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Training Successful - DiabeTech AI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card-glass p-4 p-md-5 text-center position-relative overflow-hidden">
+                <!-- Success Pulse Icon -->
+                <div class="feature-icon-box feature-icon-emerald mx-auto mb-4" style="width: 72px; height: 72px; font-size: 2.5rem;">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+
+                <div class="d-inline-flex mb-2">
+                    <span class="badge-pill-soft badge-pill-emerald">
+                        <i class="bi bi-cpu-fill"></i> Random Forest Classifier Fitted
+                    </span>
+                </div>
+                <h1 class="display-6 fw-bold text-light mb-2">Model Training Successful</h1>
+                <p class="text-muted mb-4 mx-auto" style="max-width: 580px;">
+                    The ensemble Random Forest classifier has been successfully trained on patient biomarker vectors and serialized to disk. The model is primed for real-time inference.
+                </p>
+
+                <!-- Model Metrics Summary Grid -->
+                <div class="row g-3 text-start mb-4">
+                    <div class="col-md-4">
+                        <div class="p-3 rounded-3" style="background: rgba(18, 19, 28, 0.7); border: 1px solid rgba(255,255,255,0.06);">
+                            <small class="text-muted text-uppercase fw-semibold" style="letter-spacing: 0.05em;">Algorithm</small>
+                            <div class="text-light fw-bold mt-1">Random Forest</div>
+                            <small style="color: #ff758f;">100 Estimators</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 rounded-3" style="background: rgba(18, 19, 28, 0.7); border: 1px solid rgba(255,255,255,0.06);">
+                            <small class="text-muted text-uppercase fw-semibold" style="letter-spacing: 0.05em;">Split Strategy</small>
+                            <div class="text-light fw-bold mt-1">80% Train / 20% Test</div>
+                            <small class="text-success">Random State 42</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 rounded-3" style="background: rgba(18, 19, 28, 0.7); border: 1px solid rgba(255,255,255,0.06);">
+                            <small class="text-muted text-uppercase fw-semibold" style="letter-spacing: 0.05em;">Artifact Stored</small>
+                            <div class="text-light fw-bold mt-1"><code>models/model.pkl</code></div>
+                            <small class="text-emerald" style="color: #34d399;">Ready for Inference</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation CTAs -->
+                <div class="d-flex flex-wrap gap-3 justify-content-center pt-3 border-top border-secondary border-opacity-25">
+                    <a href="{{ url_for('predict') }}" class="btn-modern btn-primary-gradient px-4 py-3">
+                        <i class="bi bi-activity"></i> Start Clinical Predictions
+                    </a>
+                    <form action="{{ url_for('visualize') }}" method="POST" class="m-0 p-0">
+                        <button type="submit" class="btn-modern btn-glass px-4 py-3">
+                            <i class="bi bi-bar-chart"></i> View Correlation Plots
+                        </button>
+                    </form>
+                    <a href="{{ url_for('dashboard') }}" class="btn-modern btn-glass px-4 py-3">
+                        <i class="bi bi-speedometer2"></i> Return to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

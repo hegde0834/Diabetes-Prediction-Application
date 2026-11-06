@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In - DiabeTech AI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <div class="card-glass p-4 p-md-5">
+                <!-- Header Icon & Title -->
+                <div class="text-center mb-4">
+                    <div class="feature-icon-box feature-icon-coral mx-auto mb-3">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <h2 class="text-light fw-bold mb-1">Welcome Back</h2>
+                    <p class="text-muted small">Enter your credentials to access the ML workstation</p>
+                </div>
+
+                <!-- Login Form -->
+                <form method="POST" action="{{ url_for('login') }}">
+                    <div class="mb-3">
+                        <label class="form-label-custom" for="email">
+                            <span>Email Address</span>
+                        </label>
+                        <div class="input-icon-wrapper">
+                            <i class="bi bi-envelope input-icon"></i>
+                            <input type="email" id="email" name="email" class="form-control form-control-glass" placeholder="doctor@clinic.com" required autocomplete="email">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label-custom" for="password">
+                            <span>Password</span>
+                        </label>
+                        <div class="input-icon-wrapper position-relative">
+                            <i class="bi bi-lock input-icon"></i>
+                            <input type="password" id="password" name="password" class="form-control form-control-glass" placeholder="••••••••" required autocomplete="current-password">
+                            <button type="button" class="btn btn-sm text-muted position-absolute end-0 top-50 translate-middle-y me-2 border-0 bg-transparent" onclick="togglePasswordVisibility('password', this)" tabindex="-1">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-modern btn-primary-gradient w-100 py-3 mb-3">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In to Dashboard
+                    </button>
+                </form>
+
+                <div class="text-center pt-3 border-top border-secondary border-opacity-25">
+                    <p class="text-muted small mb-0">
+                        Don't have an account? 
+                        <a href="{{ url_for('register') }}" class="fw-semibold text-decoration-none" style="color: #ff758f;">
+                            Register here <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+}
+</script>
+{% endblock %}

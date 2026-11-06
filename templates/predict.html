@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Clinical Risk Prediction - DiabeTech AI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <!-- Header Section -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                <div>
+                    <div class="d-inline-flex mb-2">
+                        <span class="badge-pill-soft badge-pill-coral">
+                            <i class="bi bi-heart-pulse-fill"></i> Diagnostic Inference
+                        </span>
+                    </div>
+                    <h2 class="fw-bold text-light mb-1">Patient Diabetes Risk Assessment</h2>
+                    <p class="text-muted small mb-0">Input physiological markers to evaluate patient risk profile</p>
+                </div>
+
+                <!-- Quick Preset Demo Buttons -->
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn-modern btn-glass btn-sm-custom" onclick="loadLowRiskPreset()">
+                        <i class="bi bi-shield-check text-success"></i> Sample: Low Risk
+                    </button>
+                    <button type="button" class="btn-modern btn-glass btn-sm-custom" onclick="loadHighRiskPreset()">
+                        <i class="bi bi-exclamation-triangle" style="color: #ff4d6d;"></i> Sample: High Risk
+                    </button>
+                    <button type="button" class="btn-modern btn-glass btn-sm-custom" onclick="resetForm()">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Prediction Form Card -->
+            <div class="card-glass p-4 p-md-5">
+                <form id="predictionForm" method="POST" action="{{ url_for('predict') }}">
+                    <div class="row g-4">
+                        <!-- Left Column: Primary Metabolic Markers -->
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                                <i class="bi bi-droplet-half fs-5" style="color: #ff758f;"></i>
+                                <h6 class="text-light fw-bold mb-0">Glycemic & Primary Biomarkers</h6>
+                            </div>
+
+                            <!-- Pregnancies -->
+                            <div class="mb-3">
+                                <label class="form-label-custom" for="input_pregnancies">
+                                    <span>Pregnancies</span>
+                                    <span class="unit-badge">Count: 0 &ndash; 20</span>
+                                </label>
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-person-heart input-icon"></i>
+                                    <input type="number" id="input_pregnancies" name="Pregnancies" class="form-control form-control-glass" placeholder="e.g. 2" min="0" max="20" required>
+                                </div>
+                                <small class="text-muted" style="font-size: 0.78rem;">Number of times pregnant (0 for males/nulliparous)</small>
+                            </div>
+
+                            <!-- Glucose Level -->
+                            <div class="mb-3">
+                                <label class="form-label-custom" for="input_glucose">
+                                    <span>Glucose Concentration</span>
+                                    <span class="unit-badge">mg/dL (0 &ndash; 200)</span>
+                                </label>
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-droplet-half input-icon"></i>
+                                    <input type="number" id="input_glucose" name="Glucose Level" class="form-control form-control-glass" placeholder="e.g. 110" min="0" max="200" required>
+                                </div>
+                                <small class="text-muted" style="font-size: 0.78rem;">Fasting blood glucose (Normal fasting: 70 &ndash; 99 mg/dL)</small>
+                            </div>
+
+                            <!-- Blood Pressure -->
+                            <div class="mb-3">
+                                <label class="form-label-custom" for="input_bp">
+                                    <span>Diastolic Blood Pressure</span>
+                                    <span class="unit-badge">mm Hg (40 &ndash; 180)</span>
+                                </label>
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-heart-pulse input-icon"></i>
+                                    <input type="number" id="input_bp" name="Blood Pressure" class="form-control form-control-glass" placeholder="e.g. 75" min="40" max="180" required>
+                                </div>
+                                <small class="text-muted" style="font-size: 0.78rem;">Diastolic blood pressure (Normal: 60 &ndash; 80 mm Hg)</small>
+                            </div>
+
+                            <!-- Skin Thickness -->
+                            <div class="mb-3">
+                                <label class="form-label-custom" for="input_skin">
+                                    <span>Triceps Skin Fold Thickness</span>
+                                    <span class="unit-badge">mm (0 &ndash; 100)</span>
+                                </label>
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-layers input-icon"></i>
+                                    <input type="number" id="input_skin" name="Skin Thickness" class="form-control form-control-glass" placeholder="e.g. 23" min="0" max="100" required>
+                                </div>
+                                <small class="text-muted" style="font-size: 0.78rem;">Subcutaneous fat calibration measurement</small>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Secondary & Genetic Markers -->
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                                <i class="bi bi-activity text-purple fs-5"></i>
+                                <h6 class="text-light fw-bold mb-0">Metabolic & Genetic Metrics</h6>
+                            </div>
+
+                            <!-- Insulin Level -->
+                            <div class="mb-3">
+                                <label class="form-label-custom" for="input_insulin">
+                                    <span>2-Hour Serum Insulin</span>
+                                    <span class="unit-badge">µU/mL (0 &ndash; 800)</span>
+                                </label>
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-capsule input-icon"></i>
+                                    <input type="number" id="input_insulin" name="Insulin Level" class="form-control form-control-glass" placeholder="e.g. 85" min="0" max="800" required>
+                                </div>
+                                <small class="text-muted" style="font-size: 0.78rem;">Normal fasting: 16 &ndash; 166 µU/mL (0 if not recorded)</small>
+                            </div>
+
+                            <!-- Body Mass Index -->
+                            <div class="mb-3">
+                                <label class="form-label-custom" for="input_bmi">
+                                    <span>Body Mass Index (BMI)</span>
+                                    <span class="unit-badge">kg/m² (0.0 &ndash; 70.0)</span>
+                                </label>
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-speedometer2 input-icon"></i>
+                                    <input type="number" step="0.1" id="input_bmi" name="BMI" class="form-control form-control-glass" placeholder="e.g. 24.5" min="0" max="70" required>
+                                </div>
+                                <small class="text-muted" style="font-size: 0.78rem;">Normal: 18.5 &ndash; 24.9 | Overweight: 25.0 &ndash; 29.9 | Obese: &ge; 30</small>
+                            </div>
+
+                            <!-- Diabetes Pedigree Function -->
+                            <div class="mb-3">
+                                <label class="form-label-custom" for="input_dpf">
+                                    <span>Diabetes Pedigree Function</span>
+                                    <span class="unit-badge">Score (0.0 &ndash; 2.5)</span>
+                                </label>
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-diagram-3 input-icon"></i>
+                                    <input type="number" step="0.001" id="input_dpf" name="Diabetes Pedigree Function" class="form-control form-control-glass" placeholder="e.g. 0.351" min="0" max="2.5" required>
+                                </div>
+                                <small class="text-muted" style="font-size: 0.78rem;">Genetic scoring based on family history</small>
+                            </div>
+
+                            <!-- Age -->
+                            <div class="mb-3">
+                                <label class="form-label-custom" for="input_age">
+                                    <span>Patient Age</span>
+                                    <span class="unit-badge">Years (5 &ndash; 100)</span>
+                                </label>
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-calendar3 input-icon"></i>
+                                    <input type="number" id="input_age" name="Age" class="form-control form-control-glass" placeholder="e.g. 36" min="5" max="100" required>
+                                </div>
+                                <small class="text-muted" style="font-size: 0.78rem;">Patient biological age in completed years</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submission Action -->
+                    <div class="mt-4 pt-3 border-top border-secondary border-opacity-25 d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div class="text-muted small">
+                            <i class="bi bi-shield-check" style="color: #ff758f;"></i> Model inference powered by Scikit-Learn Random Forest
+                        </div>
+                        <button type="submit" id="submitBtn" class="btn-modern btn-primary-gradient px-5 py-3">
+                            <i class="bi bi-cpu-fill"></i> Execute Risk Prediction
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function loadLowRiskPreset() {
+    document.getElementById('input_pregnancies').value = 1;
+    document.getElementById('input_glucose').value = 85;
+    document.getElementById('input_bp').value = 66;
+    document.getElementById('input_skin').value = 23;
+    document.getElementById('input_insulin').value = 94;
+    document.getElementById('input_bmi').value = 22.4;
+    document.getElementById('input_dpf').value = 0.235;
+    document.getElementById('input_age').value = 24;
+}
+
+function loadHighRiskPreset() {
+    document.getElementById('input_pregnancies').value = 6;
+    document.getElementById('input_glucose').value = 168;
+    document.getElementById('input_bp').value = 88;
+    document.getElementById('input_skin').value = 35;
+    document.getElementById('input_insulin').value = 180;
+    document.getElementById('input_bmi').value = 36.5;
+    document.getElementById('input_dpf').value = 0.825;
+    document.getElementById('input_age').value = 54;
+}
+
+function resetForm() {
+    document.getElementById('predictionForm').reset();
+}
+</script>
+{% endblock %}

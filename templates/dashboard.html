@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - DiabeTech AI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Welcome Header Banner -->
+    <div class="card-glass p-4 p-md-5 mb-5 position-relative overflow-hidden">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge-pill-soft badge-pill-coral">
+                        <i class="bi bi-person-check-fill"></i> Authenticated Session
+                    </span>
+                    <span class="badge-pill-soft badge-pill-emerald">
+                        <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> System Operational
+                    </span>
+                </div>
+                <h1 class="display-6 fw-bold text-light mb-2">
+                    Welcome, <span class="text-gradient-primary">{{ username }}</span>
+                </h1>
+                <p class="text-muted mb-0" style="max-width: 650px;">
+                    Welcome to the DiabeTech AI clinical workstation. From this console, you can upload clinical datasets, retrain the machine learning classifier, run real-time risk predictions, and inspect visual metrics.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                    <a href="{{ url_for('predict') }}" class="btn-modern btn-emerald-gradient">
+                        <i class="bi bi-activity"></i> Run New Prediction
+                    </a>
+                    <form action="{{ url_for('logout') }}" method="POST" class="m-0 p-0">
+                        <button type="submit" class="btn-modern btn-glass">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="row g-4 mb-5">
+        <div class="col-sm-6 col-lg-3">
+            <div class="card-glass p-4 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <small class="text-muted text-uppercase fw-semibold" style="letter-spacing: 0.05em;">ML Algorithm</small>
+                        <h4 class="text-light fw-bold mt-1 mb-0">Random Forest</h4>
+                    </div>
+                    <div class="feature-icon-box feature-icon-coral mb-0" style="width: 44px; height: 44px; font-size: 1.2rem;">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+                </div>
+                <span class="badge-pill-soft badge-pill-coral">100 Estimators</span>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="card-glass p-4 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <small class="text-muted text-uppercase fw-semibold" style="letter-spacing: 0.05em;">Biomarkers</small>
+                        <h4 class="text-light fw-bold mt-1 mb-0">8 Features</h4>
+                    </div>
+                    <div class="feature-icon-box feature-icon-purple mb-0" style="width: 44px; height: 44px; font-size: 1.2rem;">
+                        <i class="bi bi-clipboard2-data"></i>
+                    </div>
+                </div>
+                <span class="badge-pill-soft badge-pill-emerald">Standardized Input</span>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="card-glass p-4 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <small class="text-muted text-uppercase fw-semibold" style="letter-spacing: 0.05em;">Target Variable</small>
+                        <h4 class="text-light fw-bold mt-1 mb-0">Outcome</h4>
+                    </div>
+                    <div class="feature-icon-box feature-icon-amber mb-0" style="width: 44px; height: 44px; font-size: 1.2rem;">
+                        <i class="bi bi-pie-chart"></i>
+                    </div>
+                </div>
+                <span class="badge-pill-soft badge-pill-amber">Binary Classification</span>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="card-glass p-4 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <small class="text-muted text-uppercase fw-semibold" style="letter-spacing: 0.05em;">Persistence</small>
+                        <h4 class="text-light fw-bold mt-1 mb-0">Active</h4>
+                    </div>
+                    <div class="feature-icon-box feature-icon-emerald mb-0" style="width: 44px; height: 44px; font-size: 1.2rem;">
+                        <i class="bi bi-hdd-network"></i>
+                    </div>
+                </div>
+                <span class="badge-pill-soft badge-pill-emerald">models/model.pkl</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Actions Pipeline -->
+    <div class="mb-5">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h3 class="fw-bold text-light mb-1">Machine Learning Workflow</h3>
+                <p class="text-muted small mb-0">Select an operational stage to proceed</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Action 1: Upload -->
+            <div class="col-md-6 col-xl-3">
+                <div class="card-glass card-glass-interactive p-4 h-100 d-flex flex-column">
+                    <div class="feature-icon-box feature-icon-coral">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                    </div>
+                    <h5 class="text-light fw-bold mb-2">1. Upload Dataset</h5>
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        Import CSV patient records, validate data headers, and preview sample rows in real-time.
+                    </p>
+                    <a href="{{ url_for('upload') }}" class="btn-modern btn-glass w-100">
+                        <i class="bi bi-upload"></i> Upload CSV
+                    </a>
+                </div>
+            </div>
+
+            <!-- Action 2: Train -->
+            <div class="col-md-6 col-xl-3">
+                <div class="card-glass card-glass-interactive p-4 h-100 d-flex flex-column">
+                    <div class="feature-icon-box feature-icon-purple">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+                    <h5 class="text-light fw-bold mb-2">2. Train Classifier</h5>
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        Fit the Random Forest classifier on dataset features and update model artifacts.
+                    </p>
+                    <form action="{{ url_for('train') }}" method="POST" class="w-100 mt-auto">
+                        <button type="submit" class="btn-modern btn-primary-gradient w-100">
+                            <i class="bi bi-play-circle"></i> Retrain Model
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Action 3: Predict -->
+            <div class="col-md-6 col-xl-3">
+                <div class="card-glass card-glass-interactive p-4 h-100 d-flex flex-column">
+                    <div class="feature-icon-box feature-icon-emerald">
+                        <i class="bi bi-heart-pulse"></i>
+                    </div>
+                    <h5 class="text-light fw-bold mb-2">3. Predict Risk</h5>
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        Input patient clinical markers to calculate real-time diabetes risk probability.
+                    </p>
+                    <a href="{{ url_for('predict') }}" class="btn-modern btn-emerald-gradient w-100">
+                        <i class="bi bi-activity"></i> Predict Now
+                    </a>
+                </div>
+            </div>
+
+            <!-- Action 4: Visualize -->
+            <div class="col-md-6 col-xl-3">
+                <div class="card-glass card-glass-interactive p-4 h-100 d-flex flex-column">
+                    <div class="feature-icon-box feature-icon-amber">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <h5 class="text-light fw-bold mb-2">4. Visual Analytics</h5>
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        Generate exploratory correlation plots between pregnancies, glucose, and risk outcomes.
+                    </p>
+                    <form action="{{ url_for('visualize') }}" method="POST" class="w-100 mt-auto">
+                        <button type="submit" class="btn-modern btn-glass w-100">
+                            <i class="bi bi-bar-chart"></i> View Plots
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biomarker Reference Table -->
+    <div class="card-glass p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <h5 class="text-light fw-bold mb-1">Clinical Biomarker Reference Guide</h5>
+                <small class="text-muted">Standard physiological reference ranges utilized by the diagnostic model</small>
+            </div>
+            <span class="badge-pill-soft badge-pill-coral">
+                <i class="bi bi-info-circle"></i> Reference Norms
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table-glass">
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Standard Metric Unit</th>
+                        <th>Healthy / Normal Range</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-semibold text-light"><i class="bi bi-droplet-half text-warning me-2"></i>Glucose Level</td>
+                        <td><code>mg/dL</code></td>
+                        <td>70 &ndash; 140 mg/dL</td>
+                        <td>Primary serum indicator for glycemic regulation</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold text-light"><i class="bi bi-heart-pulse me-2" style="color: #ff4d6d;"></i>Blood Pressure</td>
+                        <td><code>mm Hg</code></td>
+                        <td>60 &ndash; 85 mm Hg</td>
+                        <td>Diastolic arterial pressure indicator</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold text-light"><i class="bi bi-speedometer2 text-warning me-2"></i>BMI (Body Mass Index)</td>
+                        <td><code>kg/m²</code></td>
+                        <td>18.5 &ndash; 24.9 kg/m²</td>
+                        <td>Ratio of weight to squared height for adiposity</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold text-light"><i class="bi bi-activity text-success me-2"></i>Insulin Level</td>
+                        <td><code>µU/mL</code></td>
+                        <td>16 &ndash; 166 µU/mL</td>
+                        <td>2-hour serum insulin concentration</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold text-light"><i class="bi bi-dna text-purple me-2"></i>Pedigree Function</td>
+                        <td><code>score (0-2.5)</code></td>
+                        <td>&lt; 0.50 score</td>
+                        <td>Genetic diabetes susceptibility scoring</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
